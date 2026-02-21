@@ -1,0 +1,201 @@
+.login-page {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(160deg, #061240 0%, #0c206d 40%, #0d2568 70%, #081850 100%);
+}
+
+/* Left: 16:9 video panel */
+.login-page__video {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: transparent;
+}
+
+.login-page__video-inner {
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: min(56.25vw, 100vh);
+  border-radius: 24px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0f2872 0%, #0c206d 100%);
+  border: none;
+  outline: none;
+}
+
+.login-page__video-el {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border: none;
+  outline: none;
+  vertical-align: top;
+}
+
+/* Right: form area */
+.login-page__form-wrap {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: transparent;
+}
+
+/* Card: #0c206d with depth and polish */
+.login-page__card {
+  width: 100%;
+  max-width: 420px;
+  padding: 2.5rem 2.75rem;
+  background: #0c206d;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 24px;
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.12),
+    0 24px 48px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  position: relative;
+  overflow: hidden;
+}
+
+.login-page__card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 10%, rgba(255, 255, 255, 0.25) 50%, transparent 90%);
+  pointer-events: none;
+}
+
+.login-page__title {
+  margin: 0 0 0.35rem;
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-size: 1.65rem;
+  line-height: 1.25;
+}
+
+.login-page__tagline {
+  margin: 0 0 1.75rem;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.login-page__error {
+  color: #fca5a5;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.login-page__label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.9rem;
+}
+
+.login-page__label + .login-page__label,
+input + .login-page__label {
+  margin-top: 1rem;
+}
+
+.login-page__input,
+.login-page__card input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #fff;
+  border-radius: 12px;
+  padding: 0.9rem 1.1rem;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.login-page__input::placeholder,
+.login-page__card input::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.login-page__input:focus,
+.login-page__card input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
+.login-page__submit {
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 0.95rem 1.25rem;
+  background: linear-gradient(180deg, #fff 0%, #f5f5ff 100%);
+  color: #0c206d;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+}
+
+.login-page__submit:hover:not(:disabled) {
+  background: linear-gradient(180deg, #f8f8ff 0%, #fff 100%);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+
+.login-page__submit:active:not(:disabled) {
+  transform: scale(0.99);
+}
+
+.login-page__submit:disabled {
+  opacity: 0.85;
+  cursor: not-allowed;
+}
+
+.login-page__register {
+  margin-top: 1.5rem;
+  margin-bottom: 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.95rem;
+}
+
+.login-page__register a {
+  color: #b8c4ff;
+  font-weight: 600;
+  text-underline-offset: 2px;
+}
+
+.login-page__register a:hover {
+  color: #e0e7ff;
+}
+
+@media (max-width: 768px) {
+  .login-page {
+    flex-direction: column;
+  }
+
+  .login-page__video {
+    padding: 1rem;
+  }
+
+  .login-page__video-inner {
+    max-height: 35vh;
+  }
+
+  .login-page__form-wrap {
+    padding: 1.5rem;
+  }
+}
