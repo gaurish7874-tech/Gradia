@@ -8,29 +8,30 @@ import { generateFeedback } from '../services/aiFeedbackService.js';
 export const submitAnswer = async (req, res, next) => {
   try {
     const userId = req.user.id;
-    const { quizId, questionId, correct, difficulty, topic } = req.body;
+    const { questionId, correct, topic, timeTaken, attempts } = req.body;
     if (!questionId) throw new AppError(400, 'questionId is required');
     const question = await Question.findById(questionId);
     if (!question) throw new AppError(404, 'Question not found');
-    const score = correct ? 10 : 4;
-    const timeTaken = 1;
-    const attempts = 1;
-    const predictedLevel = predictLevel(score, timeTaken, attempts);
-    const aiFeedback = generateFeedback({
+    const isCorrect = correct === true;
+    const score = isCorrect ? 10 : 4;
+    const normalizedTimeTaken = Math.max(0, Number(timeTaken) || 1);
+    const normalizedAttempts = Math.max(1, Number(attempts) || 1);
+    const predictedLevel = predictLevel(score, normalizedTimeTaken, normalizedAttempts);
+    const aiFeedback = await generateFeedback({
       score,
       topic: topic || question.topic,
-      timeTaken,
-      attempts,
+      timeTaken: normalizedTimeTaken,
+      attempts: normalizedAttempts,
       predictedLevel,
     });
-    await Attempt.create({
+    const attempt = await Attempt.create({
       userId,
       questionId,
       topic: topic || question.topic,
       score,
-      timeTaken,
-      attempts,
-      isCorrect: correct,
+      timeTaken: normalizedTimeTaken,
+      attempts: normalizedAttempts,
+      isCorrect,
       predictedLevel,
       aiFeedback,
     });
@@ -38,19 +39,33 @@ export const submitAnswer = async (req, res, next) => {
       userId,
       {
         $set: { currentLevel: predictedLevel },
-        $inc: { totalPoints: correct ? 10 : 2 },
+        $inc: { totalPoints: isCorrect ? 10 : 2 },
       },
       { new: true }
     );
-    const pointsEarned = correct ? 10 : 2;
+    const pointsEarned = isCorrect ? 10 : 2;
+    const levelLabelMap = { easy: 'beginner', medium: 'intermediate', hard: 'advanced' };
     const levelRank = Math.floor((user.totalPoints ?? 0) / 100) + 1;
     res.status(201).json({
       status: 'success',
+      attempt: {
+        id: attempt._id,
+        score: attempt.score,
+        isCorrect: attempt.isCorrect,
+        predictedLevel: attempt.predictedLevel,
+        aiFeedback: attempt.aiFeedback,
+        timeTaken: attempt.timeTaken,
+        attempts: attempt.attempts,
+      },
       gamification: {
         pointsEarned,
         totalPoints: user.totalPoints,
         xp: user.totalPoints,
         levelRank,
+      },
+      user: {
+        currentLevel: user.currentLevel,
+        level: levelLabelMap[user.currentLevel] || 'beginner',
       },
       newBadges: [],
     });
@@ -104,6 +119,12 @@ export const getProgress = async (req, res, next) => {
       topic: a.topic,
       correct: a.isCorrect,
       pointsEarned: a.isCorrect ? 10 : 2,
+      score: a.score,
+      timeTaken: a.timeTaken,
+      attempts: a.attempts,
+      predictedLevel: a.predictedLevel,
+      aiFeedback: a.aiFeedback,
+      createdAt: a.createdAt,
     }));
     res.status(200).json({
       status: 'success',

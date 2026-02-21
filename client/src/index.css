@@ -123,3 +123,122 @@ input, select, textarea {
 .badge-level.beginner { background: #166534; color: #bbf7d0; }
 .badge-level.intermediate { background: #1e40af; color: #93c5fd; }
 .badge-level.advanced { background: #7c2d12; color: #fed7aa; }
+
+.ai-highlight-card {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(99, 102, 241, 0.2), transparent 40%),
+    linear-gradient(180deg, rgba(99, 102, 241, 0.07), rgba(26, 26, 34, 0.98));
+}
+
+.ai-coach-heading {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.ai-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #60a5fa;
+  box-shadow: 0 0 0 0 rgba(96, 165, 250, 0.7);
+  animation: aiPulse 1.8s infinite;
+}
+
+.ai-coach-text {
+  color: var(--text);
+  line-height: 1.6;
+  margin: 0.45rem 0 0;
+}
+
+.ai-caret {
+  display: inline-block;
+  width: 7px;
+  height: 1em;
+  margin-left: 0.1rem;
+  transform: translateY(0.15rem);
+  background: rgba(255, 255, 255, 0.6);
+  animation: blink 1s step-start infinite;
+}
+
+.ai-chip {
+  border: 1px solid rgba(99, 102, 241, 0.5);
+  border-radius: 999px;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.85rem;
+  color: #c7d2fe;
+  background: rgba(99, 102, 241, 0.15);
+}
+
+.ai-level-track {
+  display: flex;
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.ai-level-segment {
+  height: 100%;
+  transition: width 0.5s ease;
+}
+
+.ai-level-easy {
+  background: linear-gradient(90deg, #16a34a, #4ade80);
+}
+
+.ai-level-medium {
+  background: linear-gradient(90deg, #0ea5e9, #38bdf8);
+}
+
+.ai-level-hard {
+  background: linear-gradient(90deg, #f97316, #fb923c);
+}
+
+.ai-feedback-item {
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  border-radius: 10px;
+  padding: 0.75rem;
+  background: rgba(99, 102, 241, 0.08);
+}
+
+.ai-signal-label {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 0.2rem;
+}
+
+.ai-signal-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.ai-signal-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #38bdf8, #60a5fa);
+  transition: width 0.45s ease;
+}
+
+.ai-signal-fill-strong {
+  background: linear-gradient(90deg, #22c55e, #84cc16);
+}
+
+@keyframes aiPulse {
+  0% { box-shadow: 0 0 0 0 rgba(96, 165, 250, 0.6); }
+  70% { box-shadow: 0 0 0 10px rgba(96, 165, 250, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(96, 165, 250, 0); }
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}

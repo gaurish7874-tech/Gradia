@@ -5,8 +5,11 @@ import User from '../models/User.js';
 import { AppError } from '../utils/AppError.js';
 import { predictLevel } from '../services/mlService.js';
 import { generateFeedback } from '../services/aiFeedbackService.js';
+import { generateMCQQuestions } from '../services/aiQuestionService.js';
+import { getAIProvider, hasAIProviderKey, missingProviderKeyMessage } from '../services/aiProvider.js';
 
 const diffClientToBackend = { beginner: 'easy', intermediate: 'medium', advanced: 'hard' };
+const diffBackendToClient = { easy: 'beginner', medium: 'intermediate', hard: 'advanced' };
 
 function toClientQuestion(q) {
   return {
@@ -40,25 +43,37 @@ export const getDiagnostic = async (req, res, next) => {
 export const generateQuiz = async (req, res, next) => {
   try {
     const userId = req.user.id;
-    const { topic, difficulty, count, questionType } = req.body;
+    const { topic, difficulty, count, questionType = 'mcq' } = req.body;
+    const safeTopic = String(topic || '').trim();
+    if (!safeTopic) throw new AppError(400, 'Please select a subject');
+    if (String(questionType).toLowerCase() !== 'mcq') {
+      throw new AppError(400, 'Only MCQ question type is supported');
+    }
+    const provider = getAIProvider();
+    if (!hasAIProviderKey(provider)) {
+      throw new AppError(500, missingProviderKeyMessage(provider));
+    }
+
     const limit = Math.min(Number(count) || 5, 15);
     const backendDiff = diffClientToBackend[difficulty] || difficulty || 'easy';
     const safeDiff = ['easy', 'medium', 'hard'].includes(backendDiff) ? backendDiff : 'easy';
-    const filter = { difficulty: safeDiff };
-    if (topic && String(topic).trim()) filter.topic = new RegExp(String(topic).trim(), 'i');
-    const questions = await Question.find(filter).limit(limit);
-    if (!questions.length) {
-      const any = await Question.find().limit(limit);
-      if (!any.length) throw new AppError(404, 'No questions in database. Run seed script first.');
-      questions.push(...any);
+
+    const aiQuestions = await generateMCQQuestions({
+      topic: safeTopic,
+      difficulty: safeDiff,
+      count: limit,
+    });
+    if (aiQuestions.length < limit) {
+      throw new AppError(502, 'AI could not generate enough MCQ questions for that subject. Please try again.');
     }
-    const title = `${topic || 'Quiz'} – ${difficulty || 'beginner'}`;
+
+    const savedQuestions = await Question.insertMany(aiQuestions);
     const quiz = await Quiz.create({
-      title,
-      topic: topic || 'General',
-      difficulty: backendDiff,
+      title: `${safeTopic} - ${diffBackendToClient[safeDiff]}`,
+      topic: safeTopic,
+      difficulty: safeDiff,
       userId,
-      questions: questions.map((q) => ({
+      questions: savedQuestions.map((q) => ({
         _id: q._id,
         topic: q.topic,
         difficulty: q.difficulty,
@@ -66,14 +81,15 @@ export const generateQuiz = async (req, res, next) => {
         text: q.questionText,
         options: q.options,
         correctAnswer: q.correctAnswer,
-        explanation: null,
+        explanation: q.explanation || null,
       })),
     });
+
     res.status(201).json({
       _id: quiz._id,
       title: quiz.title,
       topic: quiz.topic,
-      difficulty: difficulty || 'beginner',
+      difficulty: diffBackendToClient[safeDiff],
       questions: quiz.questions.map(toClientQuestion),
     });
   } catch (err) {
@@ -127,7 +143,7 @@ export const submitAttempt = async (req, res, next) => {
     const isCorrect = question.correctAnswer === selectedAnswer;
     const score = isCorrect ? 10 : 4;
     const predictedLevel = predictLevel(score, Number(timeTaken), Number(attempts) || 1);
-    const aiFeedback = generateFeedback({
+    const aiFeedback = await generateFeedback({
       score: Number(score),
       topic: question.topic,
       timeTaken: Number(timeTaken),
@@ -192,7 +208,7 @@ export const getNextQuestion = async (req, res, next) => {
     if (!['easy', 'medium', 'hard'].includes(level)) {
       throw new AppError(400, 'Invalid difficulty');
     }
-    const questions = await Question.find({ difficulty }).limit(1);
+    const questions = await Question.find({ difficulty: level }).limit(1);
     const question = questions[0];
     if (!question) throw new AppError(404, 'No questions available for this level');
     res.status(200).json({
