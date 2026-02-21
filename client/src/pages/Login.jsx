@@ -44,7 +44,7 @@ export default function Login() {
       </div>
       <div className="login-page__form-wrap">
         <div className="login-page__card">
-          <h1 className="login-page__title">Log in to LearnSphere</h1>
+          <h1 className="login-page__title">Log in to Gradia</h1>
           <p className="login-page__tagline">Welcome back. Continue your learning journey.</p>
           {error && <p className="login-page__error">{error}</p>}
           <form onSubmit={handleSubmit}>

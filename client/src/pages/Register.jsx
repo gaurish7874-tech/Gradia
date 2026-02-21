@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import './Login.css';
 
 export default function Register() {
   const [name, setName] = useState('');
@@ -19,40 +20,71 @@ export default function Register() {
       await register(name, email, password);
       navigate('/');
     } catch (err) {
-      setError(err.message || 'Registration failed');
+      const msg = err.message || 'Registration failed';
+      setError(msg.includes('fetch') || msg.includes('Network') ? 'Cannot reach server. Is the backend running on port 5000?' : msg);
     } finally {
       setLoading(false);
     }
   };
 
-  const inputStyle = {
-    width: '100%',
-    padding: '0.75rem',
-    borderRadius: 'var(--radius)',
-    border: '1px solid var(--border)',
-    background: 'var(--bg)',
-    color: 'var(--text)',
-  };
-
   return (
-    <div className="container" style={{ maxWidth: '400px', margin: '4rem auto', padding: '2rem' }}>
-      <div className="card">
-        <h1 style={{ marginTop: 0, marginBottom: '1.5rem' }}>Create account</h1>
-        {error && <p style={{ color: 'var(--danger)', marginBottom: '1rem' }}>{error}</p>}
-        <form onSubmit={handleSubmit}>
-          <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--muted)' }}>Name</label>
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)} required style={inputStyle} />
-          <label style={{ display: 'block', marginBottom: '0.5rem', marginTop: '1rem', color: 'var(--muted)' }}>Email</label>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required style={inputStyle} />
-          <label style={{ display: 'block', marginBottom: '0.5rem', marginTop: '1rem', color: 'var(--muted)' }}>Password (min 6)</label>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} style={inputStyle} />
-          <button type="submit" className="btn btn-primary" disabled={loading} style={{ width: '100%', marginTop: '1.5rem' }}>
-            {loading ? 'Creating account...' : 'Register'}
-          </button>
-        </form>
-        <p style={{ marginTop: '1.5rem', color: 'var(--muted)' }}>
-          Already have an account? <Link to="/login">Log in</Link>
-        </p>
+    <div className="login-page">
+      <div className="login-page__video">
+        <div className="login-page__video-inner">
+          <video
+            className="login-page__video-el"
+            src="/login-video.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+            aria-hidden
+            onError={(e) => { e.target.style.display = 'none'; }}
+          />
+        </div>
+      </div>
+      <div className="login-page__form-wrap">
+        <div className="login-page__card">
+          <h1 className="login-page__title">Create account</h1>
+          <p className="login-page__tagline">Join Gradia and start your learning journey.</p>
+          {error && <p className="login-page__error">{error}</p>}
+          <form onSubmit={handleSubmit}>
+            <label className="login-page__label">Name</label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              placeholder="Your name"
+              className="login-page__input"
+            />
+            <label className="login-page__label">Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              placeholder="you@example.com"
+              className="login-page__input"
+            />
+            <label className="login-page__label">Password (min 6)</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={6}
+              placeholder="••••••••"
+              className="login-page__input"
+            />
+            <button type="submit" className="btn login-page__submit" disabled={loading}>
+              {loading ? 'Creating account...' : 'Register'}
+            </button>
+          </form>
+          <p className="login-page__register">
+            Already have an account? <Link to="/login">Log in</Link>
+          </p>
+        </div>
       </div>
     </div>
   );

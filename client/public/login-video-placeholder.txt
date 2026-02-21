@@ -1,4 +1,4 @@
 Place your login background video here:
   - Filename: login-video,mp4
-  - Location: c:\Users\HP\OneDrive\Desktop\LearnSphere\client\public\login-video.mp4
+  - Location: c:\Users\HP\OneDrive\Desktop\Gradia-main\client\public\login-video.mp4
   - The login page will show it on the left side. Delete this file once you add your video.

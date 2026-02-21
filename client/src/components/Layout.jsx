@@ -18,7 +18,7 @@ export default function Layout() {
       <header style={headerStyle}>
         <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
           <NavLink to="/" style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text)' }}>
-            LearnSphere
+            Gradia
           </NavLink>
           <nav style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
             <NavLink to="/" className={navClass} end>Dashboard</NavLink>

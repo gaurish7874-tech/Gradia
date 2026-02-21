@@ -1,7 +1,7 @@
 const API_BASE = '/api';
 
 function getToken() {
-  return localStorage.getItem('learnsphere_token');
+  return localStorage.getItem('gradia_token');
 }
 
 export async function api(url, options = {}) {

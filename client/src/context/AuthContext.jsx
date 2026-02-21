@@ -8,33 +8,33 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('learnsphere_token');
+    const token = localStorage.getItem('gradia_token');
     if (!token) {
       setLoading(false);
       return;
     }
     authApi.me()
       .then((data) => setUser(data.user))
-      .catch(() => localStorage.removeItem('learnsphere_token'))
+      .catch(() => localStorage.removeItem('gradia_token'))
       .finally(() => setLoading(false));
   }, []);
 
   const login = async (email, password) => {
     const data = await authApi.login({ email, password });
-    localStorage.setItem('learnsphere_token', data.token);
+    localStorage.setItem('gradia_token', data.token);
     setUser(data.user);
     return data;
   };
 
   const register = async (name, email, password) => {
     const data = await authApi.register({ name, email, password });
-    localStorage.setItem('learnsphere_token', data.token);
+    localStorage.setItem('gradia_token', data.token);
     setUser(data.user);
     return data;
   };
 
   const logout = () => {
-    localStorage.removeItem('learnsphere_token');
+    localStorage.removeItem('gradia_token');
     setUser(null);
   };
 
