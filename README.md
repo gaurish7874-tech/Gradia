@@ -1,4 +1,4 @@
-# LearnSphere — AI-Powered Adaptive Gamified Learning (MERN)
+# GRADIA — AI-Powered Adaptive Gamified Learning (MERN)
 
 MERN stack hackathon project: adaptive quizzes, ML-based difficulty, and AI feedback.
 
