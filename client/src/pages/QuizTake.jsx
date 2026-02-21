@@ -79,6 +79,7 @@ export default function QuizTake() {
 
   const question = quiz?.questions?.[currentIndex];
   const isLast = quiz && currentIndex === quiz.questions.length - 1;
+  const progressPercent = quiz ? ((currentIndex + (feedback ? 1 : 0)) / quiz.questions.length) * 100 : 0;
 
   const adaptiveSignals = useMemo(() => {
     if (!feedback) {
@@ -165,9 +166,9 @@ export default function QuizTake() {
   if (error || !quiz) return <div className="container" style={{ color: 'var(--danger)' }}>{error || 'Quiz not found'}</div>;
 
   return (
-    <div className="container" style={{ maxWidth: '820px' }}>
-      <h1>{quiz.title}</h1>
-      <p style={{ color: 'var(--muted)', marginBottom: '1.5rem' }}>
+    <div className="container page-enter" style={{ maxWidth: '820px' }}>
+      <h1 className="stagger-in" style={{ '--enter-delay': '40ms' }}>{quiz.title}</h1>
+      <p className="stagger-in" style={{ color: 'var(--muted)', marginBottom: '0.8rem', '--enter-delay': '90ms' }}>
         Question {currentIndex + 1} of {quiz.questions.length}
         {quiz.difficulty && (
           <span className={`badge-level ${toLevelClass(quiz.difficulty)}`} style={{ marginLeft: '0.5rem' }}>
@@ -175,14 +176,17 @@ export default function QuizTake() {
           </span>
         )}
       </p>
+      <div className="quiz-progress stagger-in" style={{ '--enter-delay': '130ms', marginBottom: '1.5rem' }}>
+        <div className="quiz-progress-fill" style={{ width: toPercent(progressPercent) }} />
+      </div>
 
       {!feedback ? (
-        <div className="card">
+        <div className="card stagger-in quiz-question-card" style={{ '--enter-delay': '170ms' }}>
           <h3 style={{ marginTop: 0 }}>{question?.text}</h3>
           {question?.options?.length ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               {question.options.map((opt) => (
-                <label key={opt} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                <label key={opt} className={`quiz-option ${selected === opt ? 'selected' : ''}`}>
                   <input
                     type="radio"
                     name="choice"
@@ -204,7 +208,7 @@ export default function QuizTake() {
           )}
           <button
             type="button"
-            className="btn btn-primary"
+            className="btn btn-primary btn-float"
             onClick={submitAndNext}
             disabled={selected === ''}
             style={{ marginTop: '1rem' }}
@@ -213,9 +217,9 @@ export default function QuizTake() {
           </button>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
+        <div className="quiz-feedback-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
           <div className="card" style={{ borderColor: feedback.correct ? 'var(--success)' : 'var(--danger)' }}>
-            <p style={{ color: feedback.correct ? 'var(--success)' : 'var(--danger)', fontWeight: 700, marginTop: 0 }}>
+            <p className={`feedback-status ${feedback.correct ? 'success' : 'error'}`} style={{ marginTop: 0 }}>
               {feedback.correct ? 'Correct' : 'Incorrect'}
               {pointsEarned > 0 && ` | +${pointsEarned} points`}
             </p>
@@ -260,7 +264,7 @@ export default function QuizTake() {
             )}
           </div>
 
-          <div className="card ai-highlight-card">
+          <div className="card ai-highlight-card ai-coach-card">
             <div className="ai-coach-heading">
               <span className="ai-dot" />
               AI Coach
@@ -273,7 +277,7 @@ export default function QuizTake() {
               </p>
             )}
             <div style={{ marginTop: '1rem' }}>
-              <button type="button" className="btn btn-primary" onClick={goNext}>
+              <button type="button" className="btn btn-primary btn-float" onClick={goNext}>
                 {isLast ? 'Finish quiz' : 'Next question'}
               </button>
             </div>

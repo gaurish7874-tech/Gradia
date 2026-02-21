@@ -5,8 +5,7 @@ import User from '../models/User.js';
 import { AppError } from '../utils/AppError.js';
 import { predictLevel } from '../services/mlService.js';
 import { generateFeedback } from '../services/aiFeedbackService.js';
-import { generateMCQQuestions } from '../services/aiQuestionService.js';
-import { getAIProvider, hasAIProviderKey, missingProviderKeyMessage } from '../services/aiProvider.js';
+import { getHardcodedQuestionsForSubject, resolveSubject } from '../services/hardcodedQuestionBank.js';
 
 const diffClientToBackend = { beginner: 'easy', intermediate: 'medium', advanced: 'hard' };
 const diffBackendToClient = { easy: 'beginner', medium: 'intermediate', hard: 'advanced' };
@@ -23,6 +22,36 @@ function toClientQuestion(q) {
     correctAnswer: q.correctAnswer,
     explanation: q.explanation,
   };
+}
+
+function shuffle(items) {
+  const arr = [...items];
+  for (let i = arr.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+async function ensureHardcodedSubjectQuestions(subject) {
+  const bank = getHardcodedQuestionsForSubject(subject);
+  if (!bank.length) return [];
+
+  const existing = await Question.find({ topic: subject })
+    .select('questionText difficulty')
+    .lean();
+  const existingKeys = new Set(
+    existing.map((q) => `${q.difficulty}::${String(q.questionText || '').trim().toLowerCase()}`)
+  );
+
+  const missing = bank.filter(
+    (q) => !existingKeys.has(`${q.difficulty}::${String(q.questionText || '').trim().toLowerCase()}`)
+  );
+  if (missing.length) {
+    await Question.insertMany(missing);
+  }
+
+  return bank;
 }
 
 export const getDiagnostic = async (req, res, next) => {
@@ -44,36 +73,45 @@ export const generateQuiz = async (req, res, next) => {
   try {
     const userId = req.user.id;
     const { topic, difficulty, count, questionType = 'mcq' } = req.body;
-    const safeTopic = String(topic || '').trim();
-    if (!safeTopic) throw new AppError(400, 'Please select a subject');
+    const safeTopic = resolveSubject(topic);
+    if (!safeTopic) throw new AppError(400, 'Please select a valid subject');
     if (String(questionType).toLowerCase() !== 'mcq') {
       throw new AppError(400, 'Only MCQ question type is supported');
-    }
-    const provider = getAIProvider();
-    if (!hasAIProviderKey(provider)) {
-      throw new AppError(500, missingProviderKeyMessage(provider));
     }
 
     const limit = Math.min(Number(count) || 5, 15);
     const backendDiff = diffClientToBackend[difficulty] || difficulty || 'easy';
     const safeDiff = ['easy', 'medium', 'hard'].includes(backendDiff) ? backendDiff : 'easy';
 
-    const aiQuestions = await generateMCQQuestions({
+    const bank = await ensureHardcodedSubjectQuestions(safeTopic);
+    if (!bank.length) {
+      throw new AppError(500, 'No hardcoded questions available for this subject.');
+    }
+    const bankQuestionTexts = bank.map((q) => q.questionText);
+    const subjectQuestions = await Question.find({
       topic: safeTopic,
-      difficulty: safeDiff,
-      count: limit,
+      questionText: { $in: bankQuestionTexts },
     });
-    if (aiQuestions.length < limit) {
-      throw new AppError(502, 'AI could not generate enough MCQ questions for that subject. Please try again.');
+
+    const byDifficulty = subjectQuestions.filter((q) => q.difficulty === safeDiff);
+    const picked = shuffle(byDifficulty).slice(0, limit);
+
+    if (picked.length < limit) {
+      const pickedIds = new Set(picked.map((q) => String(q._id)));
+      const extras = shuffle(subjectQuestions).filter((q) => !pickedIds.has(String(q._id)));
+      picked.push(...extras.slice(0, limit - picked.length));
     }
 
-    const savedQuestions = await Question.insertMany(aiQuestions);
+    if (picked.length < limit) {
+      throw new AppError(500, 'Question bank is not ready for this subject yet.');
+    }
+
     const quiz = await Quiz.create({
       title: `${safeTopic} - ${diffBackendToClient[safeDiff]}`,
       topic: safeTopic,
       difficulty: safeDiff,
       userId,
-      questions: savedQuestions.map((q) => ({
+      questions: picked.map((q) => ({
         _id: q._id,
         topic: q.topic,
         difficulty: q.difficulty,

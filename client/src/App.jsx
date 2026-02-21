@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Layout from './components/Layout';
+import ConstellationBackground from './components/ConstellationBackground';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
@@ -29,21 +30,35 @@ function PublicRoute({ children }) {
 export default function App() {
   return (
     <AuthProvider>
-      <div className="app">
-        <Routes>
-          <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-          <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
-          <Route path="/" element={<PrivateRoute><Layout /></PrivateRoute>}>
-            <Route index element={<Dashboard />} />
-            <Route path="diagnostic" element={<DiagnosticQuiz />} />
-            <Route path="quiz/generate" element={<QuizGenerate />} />
-            <Route path="quiz/:id" element={<QuizTake />} />
-            <Route path="leaderboard" element={<Leaderboard />} />
-            <Route path="progress" element={<Progress />} />
-            <Route path="roadmap" element={<Roadmap />} />
-          </Route>
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+      <div className="app app-with-bg">
+        <div className="animated-bg" aria-hidden="true">
+          <span className="bg-stars stars-far" />
+          <span className="bg-stars stars-near" />
+          <span className="bg-aurora aurora-1" />
+          <span className="bg-aurora aurora-2" />
+          <span className="bg-orb orb-1" />
+          <span className="bg-orb orb-2" />
+          <span className="bg-orb orb-3" />
+          <span className="bg-grid" />
+          <span className="bg-vignette" />
+          <ConstellationBackground />
+        </div>
+        <div className="app-shell">
+          <Routes>
+            <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+            <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+            <Route path="/" element={<PrivateRoute><Layout /></PrivateRoute>}>
+              <Route index element={<Dashboard />} />
+              <Route path="diagnostic" element={<DiagnosticQuiz />} />
+              <Route path="quiz/generate" element={<QuizGenerate />} />
+              <Route path="quiz/:id" element={<QuizTake />} />
+              <Route path="leaderboard" element={<Leaderboard />} />
+              <Route path="progress" element={<Progress />} />
+              <Route path="roadmap" element={<Roadmap />} />
+            </Route>
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </div>
       </div>
     </AuthProvider>
   );

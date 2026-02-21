@@ -20,7 +20,7 @@
 body {
   margin: 0;
   font-family: var(--font);
-  background: var(--bg);
+  background: #070b16;
   color: var(--text);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
@@ -61,6 +61,177 @@ input, select, textarea {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
+}
+
+.app-with-bg {
+  isolation: isolate;
+}
+
+.app-shell {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.animated-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background:
+    radial-gradient(1300px 860px at 10% -12%, rgba(124, 58, 237, 0.22), transparent 70%),
+    radial-gradient(1200px 820px at 95% -18%, rgba(59, 130, 246, 0.2), transparent 68%),
+    radial-gradient(900px 700px at 50% 120%, rgba(20, 184, 166, 0.12), transparent 72%),
+    linear-gradient(180deg, #040711 0%, #090f21 48%, #081020 100%);
+}
+
+.bg-stars {
+  position: absolute;
+  inset: 0;
+  background-repeat: repeat;
+  pointer-events: none;
+}
+
+.stars-far {
+  z-index: 1;
+  opacity: 0.5;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.55) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 80% 30%, rgba(165, 180, 252, 0.45) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 40% 70%, rgba(186, 230, 253, 0.4) 0 1px, transparent 1.5px);
+  background-size: 280px 280px, 340px 340px, 360px 360px;
+  animation: starDrift 95s linear infinite;
+}
+
+.stars-near {
+  z-index: 2;
+  opacity: 0.35;
+  background-image:
+    radial-gradient(circle at 12% 24%, rgba(255, 255, 255, 0.9) 0 1.4px, transparent 2px),
+    radial-gradient(circle at 74% 12%, rgba(196, 181, 253, 0.8) 0 1.2px, transparent 2px),
+    radial-gradient(circle at 58% 62%, rgba(147, 197, 253, 0.75) 0 1.4px, transparent 2px),
+    radial-gradient(circle at 88% 82%, rgba(94, 234, 212, 0.6) 0 1.2px, transparent 2px);
+  background-size: 180px 180px, 240px 240px, 210px 210px, 270px 270px;
+  animation: starTwinkle 7.5s ease-in-out infinite alternate;
+}
+
+.bg-aurora {
+  position: absolute;
+  width: 70vw;
+  height: 70vw;
+  min-width: 700px;
+  min-height: 700px;
+  border-radius: 42%;
+  filter: blur(58px);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.aurora-1 {
+  z-index: 2;
+  left: -16vw;
+  top: -34vh;
+  background: conic-gradient(
+    from 180deg at 50% 50%,
+    rgba(99, 102, 241, 0) 0deg,
+    rgba(99, 102, 241, 0.32) 70deg,
+    rgba(56, 189, 248, 0.24) 150deg,
+    rgba(16, 185, 129, 0.22) 220deg,
+    rgba(99, 102, 241, 0) 360deg
+  );
+  animation: auroraFloatA 30s ease-in-out infinite alternate;
+}
+
+.aurora-2 {
+  z-index: 2;
+  right: -22vw;
+  bottom: -42vh;
+  background: conic-gradient(
+    from 30deg at 50% 50%,
+    rgba(139, 92, 246, 0) 0deg,
+    rgba(59, 130, 246, 0.26) 75deg,
+    rgba(125, 211, 252, 0.24) 145deg,
+    rgba(167, 139, 250, 0.22) 235deg,
+    rgba(139, 92, 246, 0) 360deg
+  );
+  animation: auroraFloatB 34s ease-in-out infinite alternate;
+}
+
+.bg-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  mix-blend-mode: screen;
+}
+
+.orb-1 {
+  width: 44vw;
+  height: 44vw;
+  max-width: 700px;
+  max-height: 700px;
+  top: -16%;
+  left: -10%;
+  background: radial-gradient(circle, rgba(129, 140, 248, 0.45), rgba(129, 140, 248, 0));
+  animation: orbDriftA 20s ease-in-out infinite alternate;
+}
+
+.orb-2 {
+  width: 38vw;
+  height: 38vw;
+  max-width: 640px;
+  max-height: 640px;
+  right: -8%;
+  top: 12%;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.36), rgba(56, 189, 248, 0));
+  animation: orbDriftB 24s ease-in-out infinite alternate;
+}
+
+.orb-3 {
+  width: 34vw;
+  height: 34vw;
+  max-width: 560px;
+  max-height: 560px;
+  left: 26%;
+  bottom: -16%;
+  background: radial-gradient(circle, rgba(45, 212, 191, 0.24), rgba(45, 212, 191, 0));
+  animation: orbDriftC 26s ease-in-out infinite alternate;
+}
+
+.bg-grid {
+  position: absolute;
+  inset: -30%;
+  z-index: 3;
+  opacity: 0.1;
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.1) 1px, transparent 1px);
+  background-size: 52px 52px;
+  transform: perspective(900px) rotateX(63deg) translateY(16%);
+  transform-origin: center;
+  animation: gridShift 28s linear infinite;
+}
+
+.bg-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 42%, rgba(0, 0, 0, 0) 28%, rgba(0, 0, 0, 0.34) 100%);
+}
+
+.constellation-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0.94;
+  mix-blend-mode: screen;
 }
 
 .container {
@@ -79,7 +250,7 @@ input, select, textarea {
   border-radius: var(--radius);
   font-weight: 600;
   border: none;
-  transition: background 0.2s, transform 0.1s;
+  transition: background 0.2s, transform 0.12s, box-shadow 0.2s, filter 0.2s;
 }
 
 .btn:active {
@@ -110,6 +281,147 @@ input, select, textarea {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 1.5rem;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
+  transition: transform 0.22s ease, box-shadow 0.24s ease, border-color 0.24s ease;
+}
+
+.page-enter {
+  animation: fadeIn 0.32s ease both;
+}
+
+.stagger-in {
+  opacity: 0;
+  animation: riseIn 0.52s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: var(--enter-delay, 0ms);
+}
+
+.btn-float:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(99, 102, 241, 0.28);
+}
+
+.btn-float:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.card-hover-lift:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.26);
+  border-color: rgba(99, 102, 241, 0.5);
+}
+
+.dashboard-card-link {
+  display: block;
+}
+
+.quiz-form-card {
+  position: relative;
+}
+
+.quiz-form-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  pointer-events: none;
+  border: 1px solid rgba(99, 102, 241, 0.25);
+}
+
+.animated-input {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.16s ease;
+}
+
+.animated-input:focus {
+  border-color: rgba(99, 102, 241, 0.85) !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: rgba(255, 255, 255, 1);
+  animation: spin 0.72s linear infinite;
+}
+
+.error-banner {
+  animation: errorSlide 0.35s ease both;
+}
+
+.quiz-progress {
+  width: 100%;
+  height: 9px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.quiz-progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #6366f1, #38bdf8);
+  box-shadow: 0 0 14px rgba(99, 102, 241, 0.35);
+  transition: width 0.34s ease;
+}
+
+.quiz-question-card {
+  border-color: rgba(99, 102, 241, 0.32);
+}
+
+.quiz-option {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.62rem 0.72rem;
+  background: rgba(255, 255, 255, 0.02);
+  transition: transform 0.16s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.quiz-option:hover {
+  transform: translateX(3px);
+  border-color: rgba(99, 102, 241, 0.5);
+  background: rgba(99, 102, 241, 0.1);
+}
+
+.quiz-option.selected {
+  border-color: rgba(99, 102, 241, 0.85);
+  background: rgba(99, 102, 241, 0.18);
+}
+
+.quiz-option input {
+  accent-color: var(--accent);
+}
+
+.quiz-feedback-grid > .card {
+  opacity: 0;
+  animation: riseIn 0.45s cubic-bezier(0.2, 0.75, 0.2, 1) both;
+}
+
+.quiz-feedback-grid > .card:nth-child(2) {
+  animation-delay: 90ms;
+}
+
+.feedback-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-weight: 700;
+}
+
+.feedback-status.success {
+  color: var(--success);
+  animation: popIn 0.35s ease both;
+}
+
+.feedback-status.error {
+  color: var(--danger);
+  animation: popIn 0.35s ease both;
 }
 
 .badge-level {
@@ -130,6 +442,19 @@ input, select, textarea {
   background:
     radial-gradient(circle at 100% 0%, rgba(99, 102, 241, 0.2), transparent 40%),
     linear-gradient(180deg, rgba(99, 102, 241, 0.07), rgba(26, 26, 34, 0.98));
+}
+
+.ai-highlight-card::after {
+  content: "";
+  position: absolute;
+  width: 65%;
+  height: 180%;
+  top: -40%;
+  left: -75%;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+  transform: rotate(14deg);
+  animation: spotlightSweep 7s linear infinite;
 }
 
 .ai-coach-heading {
@@ -241,4 +566,114 @@ input, select, textarea {
 @keyframes blink {
   0%, 50% { opacity: 1; }
   51%, 100% { opacity: 0; }
+}
+
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes spotlightSweep {
+  0% { transform: translateX(0) rotate(14deg); }
+  100% { transform: translateX(320%) rotate(14deg); }
+}
+
+@keyframes errorSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  80% {
+    transform: translateX(-2px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes orbDriftA {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(8%, 7%, 0) scale(1.08); }
+}
+
+@keyframes orbDriftB {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(-9%, 10%, 0) scale(1.1); }
+}
+
+@keyframes orbDriftC {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(10%, -6%, 0) scale(1.06); }
+}
+
+@keyframes gridShift {
+  0% { transform: perspective(900px) rotateX(63deg) translate3d(0, 16%, 0); }
+  100% { transform: perspective(900px) rotateX(63deg) translate3d(-100px, 24%, 0); }
+}
+
+@keyframes auroraFloatA {
+  0% { transform: rotate(0deg) scale(1) translate3d(0, 0, 0); opacity: 0.7; }
+  100% { transform: rotate(36deg) scale(1.14) translate3d(5%, 6%, 0); opacity: 0.92; }
+}
+
+@keyframes auroraFloatB {
+  0% { transform: rotate(0deg) scale(1) translate3d(0, 0, 0); opacity: 0.65; }
+  100% { transform: rotate(-34deg) scale(1.12) translate3d(-6%, -4%, 0); opacity: 0.88; }
+}
+
+@keyframes starTwinkle {
+  0% { opacity: 0.24; transform: translate3d(0, 0, 0) scale(1); }
+  50% { opacity: 0.5; transform: translate3d(-0.5%, -0.4%, 0) scale(1.01); }
+  100% { opacity: 0.32; transform: translate3d(0.6%, 0.5%, 0) scale(1); }
+}
+
+@keyframes starDrift {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-60px, 40px, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stars-far,
+  .stars-near,
+  .aurora-1,
+  .aurora-2,
+  .orb-1,
+  .orb-2,
+  .orb-3,
+  .bg-grid,
+  .constellation-canvas {
+    animation: none;
+    display: none;
+  }
 }

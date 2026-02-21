@@ -52,20 +52,21 @@ export default function QuizGenerate() {
   };
 
   return (
-    <div className="container" style={{ maxWidth: '500px' }}>
-      <h1>Generate AI Quiz</h1>
-      <p style={{ color: 'var(--muted)', marginBottom: '1.5rem' }}>
+    <div className="container page-enter" style={{ maxWidth: '500px' }}>
+      <h1 className="stagger-in" style={{ '--enter-delay': '40ms' }}>Generate AI Quiz</h1>
+      <p className="stagger-in" style={{ color: 'var(--muted)', marginBottom: '1.5rem', '--enter-delay': '90ms' }}>
         Your level: <span className={`badge-level ${user?.level || 'beginner'}`}>{user?.level || 'Beginner'}</span>
-        {' '}| AI creates only MCQ questions for your selected subject.
+        {' '}| MCQ questions come from a hardcoded subject bank (15 per subject).
       </p>
-      <div className="card">
-        {error && <p style={{ color: 'var(--danger)', marginBottom: '1rem' }}>{error}</p>}
+      <div className="card quiz-form-card stagger-in" style={{ '--enter-delay': '140ms' }}>
+        {error && <p className="error-banner" style={{ color: 'var(--danger)', marginBottom: '1rem' }}>{error}</p>}
         <form onSubmit={handleGenerate}>
           <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--muted)' }}>Subject</label>
           <select
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
             style={inputStyle}
+            className="animated-input"
           >
             {SUBJECTS.map((subject) => (
               <option key={subject} value={subject}>{subject}</option>
@@ -77,6 +78,7 @@ export default function QuizGenerate() {
             value={difficulty}
             onChange={(e) => setDifficulty(e.target.value)}
             style={inputStyle}
+            className="animated-input"
           >
             <option value="beginner">Beginner</option>
             <option value="intermediate">Intermediate</option>
@@ -89,6 +91,7 @@ export default function QuizGenerate() {
             value="Multiple Choice (MCQ only)"
             disabled
             style={{ ...inputStyle, opacity: 0.8 }}
+            className="animated-input"
           />
 
           <label style={{ display: 'block', marginBottom: '0.5rem', marginTop: '1rem', color: 'var(--muted)' }}>Number of questions (max 15)</label>
@@ -99,10 +102,18 @@ export default function QuizGenerate() {
             value={count}
             onChange={(e) => setCount(Number(e.target.value) || 5)}
             style={inputStyle}
+            className="animated-input"
           />
 
-          <button type="submit" className="btn btn-primary" disabled={loading} style={{ width: '100%', marginTop: '1.5rem' }}>
-            {loading ? 'Generating...' : 'Generate and start quiz'}
+          <button type="submit" className="btn btn-primary btn-float" disabled={loading} style={{ width: '100%', marginTop: '1.5rem' }}>
+            {loading ? (
+              <>
+                <span className="spinner" />
+                Generating...
+              </>
+            ) : (
+              'Generate and start quiz'
+            )}
           </button>
         </form>
       </div>

@@ -16,31 +16,32 @@ export default function Dashboard() {
   const { user } = useAuth();
   const userLevel = user?.level || 'beginner';
   const recommendation = recommendationFromLevel(userLevel);
+  const delayStyle = (ms) => ({ '--enter-delay': `${ms}ms` });
 
   return (
-    <div className="container">
-      <h1 style={{ marginBottom: '0.5rem' }}>Welcome, {user?.name}!</h1>
-      <p style={{ color: 'var(--muted)', marginBottom: '1rem' }}>
+    <div className="container page-enter">
+      <h1 className="stagger-in" style={{ marginBottom: '0.5rem', ...delayStyle(40) }}>Welcome, {user?.name}!</h1>
+      <p className="stagger-in" style={{ color: 'var(--muted)', marginBottom: '1rem', ...delayStyle(90) }}>
         Your level: <span className={`badge-level ${userLevel}`}>{userLevel}</span>
         {!user?.diagnosticCompleted && ' | Complete the diagnostic to get a personalized path.'}
       </p>
 
-      <div className="card ai-highlight-card" style={{ marginBottom: '1.5rem' }}>
+      <div className="card ai-highlight-card stagger-in" style={{ marginBottom: '1.5rem', ...delayStyle(140) }}>
         <div className="ai-coach-heading">
           <span className="ai-dot" />
           AI Coach Spotlight
         </div>
         <p className="ai-coach-text" style={{ marginTop: '0.75rem' }}>{recommendation}</p>
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '0.9rem' }}>
-          <Link className="btn btn-primary" to="/quiz/generate">Start AI Quiz</Link>
-          <Link className="btn btn-secondary" to="/progress">View AI Insights</Link>
+          <Link className="btn btn-primary btn-float" to="/quiz/generate">Start AI Quiz</Link>
+          <Link className="btn btn-secondary btn-float" to="/progress">View AI Insights</Link>
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1rem' }}>
+      <div className="dashboard-card-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1rem' }}>
         {!user?.diagnosticCompleted && (
-          <Link to="/diagnostic" style={{ textDecoration: 'none' }}>
-            <div className="card" style={{ cursor: 'pointer', borderColor: 'var(--accent)' }}>
+          <Link className="dashboard-card-link stagger-in" to="/diagnostic" style={{ textDecoration: 'none', ...delayStyle(180) }}>
+            <div className="card dashboard-card card-hover-lift" style={{ cursor: 'pointer', borderColor: 'var(--accent)' }}>
               <h3 style={{ marginTop: 0 }}>Diagnostic Quiz</h3>
               <p style={{ color: 'var(--muted)', marginBottom: 0 }}>
                 Take a short quiz so the model can calibrate your learning level.
@@ -48,32 +49,32 @@ export default function Dashboard() {
             </div>
           </Link>
         )}
-        <Link to="/quiz/generate" style={{ textDecoration: 'none' }}>
-          <div className="card" style={{ cursor: 'pointer' }}>
+        <Link className="dashboard-card-link stagger-in" to="/quiz/generate" style={{ textDecoration: 'none', ...delayStyle(220) }}>
+          <div className="card dashboard-card card-hover-lift" style={{ cursor: 'pointer' }}>
             <h3 style={{ marginTop: 0 }}>New Quiz (AI)</h3>
             <p style={{ color: 'var(--muted)', marginBottom: 0 }}>
               Generate quizzes by topic and difficulty and get AI coaching each attempt.
             </p>
           </div>
         </Link>
-        <Link to="/progress" style={{ textDecoration: 'none' }}>
-          <div className="card" style={{ cursor: 'pointer' }}>
+        <Link className="dashboard-card-link stagger-in" to="/progress" style={{ textDecoration: 'none', ...delayStyle(260) }}>
+          <div className="card dashboard-card card-hover-lift" style={{ cursor: 'pointer' }}>
             <h3 style={{ marginTop: 0 }}>AI Progress</h3>
             <p style={{ color: 'var(--muted)', marginBottom: 0 }}>
               Inspect AI-level predictions, timeline feedback, and adaptive recommendations.
             </p>
           </div>
         </Link>
-        <Link to="/leaderboard" style={{ textDecoration: 'none' }}>
-          <div className="card" style={{ cursor: 'pointer' }}>
+        <Link className="dashboard-card-link stagger-in" to="/leaderboard" style={{ textDecoration: 'none', ...delayStyle(300) }}>
+          <div className="card dashboard-card card-hover-lift" style={{ cursor: 'pointer' }}>
             <h3 style={{ marginTop: 0 }}>Leaderboard</h3>
             <p style={{ color: 'var(--muted)', marginBottom: 0 }}>
               Compare points and level rank against other learners.
             </p>
           </div>
         </Link>
-        <Link to="/roadmap" style={{ textDecoration: 'none' }}>
-          <div className="card" style={{ cursor: 'pointer' }}>
+        <Link className="dashboard-card-link stagger-in" to="/roadmap" style={{ textDecoration: 'none', ...delayStyle(340) }}>
+          <div className="card dashboard-card card-hover-lift" style={{ cursor: 'pointer' }}>
             <h3 style={{ marginTop: 0 }}>Roadmap</h3>
             <p style={{ color: 'var(--muted)', marginBottom: 0 }}>
               Follow your personalized sequence of topics and milestones.
